@@ -25,7 +25,7 @@ public class Controller {
     private Token player1Token = Token.NOUGHT;
     private Token player2Token = Token.CROSS;
 
-    private final List<Pane[]> winningFieldsList = new ArrayList<>();
+    private final List<Pane[]> fieldLines = new ArrayList<>();
 
     private double centerX = 28.5;
     private double centerY = 29;
@@ -86,14 +86,14 @@ public class Controller {
     public void initialize() {
         noughtRadioButton.setUserData(Token.NOUGHT);
         crossRadioButton.setUserData(Token.CROSS);
-        winningFieldsList.add(new Pane[]{field00, field01, field02});
-        winningFieldsList.add(new Pane[]{field10, field11, field12});
-        winningFieldsList.add(new Pane[]{field20, field21, field22});
-        winningFieldsList.add(new Pane[]{field00, field10, field20});
-        winningFieldsList.add(new Pane[]{field01, field11, field21});
-        winningFieldsList.add(new Pane[]{field02, field12, field22});
-        winningFieldsList.add(new Pane[]{field00, field11, field22});
-        winningFieldsList.add(new Pane[]{field20, field11, field02});
+        fieldLines.add(new Pane[]{field00, field01, field02});
+        fieldLines.add(new Pane[]{field10, field11, field12});
+        fieldLines.add(new Pane[]{field20, field21, field22});
+        fieldLines.add(new Pane[]{field00, field10, field20});
+        fieldLines.add(new Pane[]{field01, field11, field21});
+        fieldLines.add(new Pane[]{field02, field12, field22});
+        fieldLines.add(new Pane[]{field00, field11, field22});
+        fieldLines.add(new Pane[]{field20, field11, field02});
     }
 
     private void startNewGame() {
@@ -104,12 +104,13 @@ public class Controller {
 
     private void clearBoard() {
         mainPanel.getChildren().removeIf(node -> node instanceof Line);
-        for (Node node : board.getChildren())
+        for (Node node : board.getChildren()) {
             if (node instanceof Pane) {
                 Pane field = (Pane) node;
                 field.getChildren().clear();
                 field.setUserData(null);
             }
+        }
     }
 
     private void resizeTokens() {
@@ -128,20 +129,18 @@ public class Controller {
     }
 
     private Pane[] getWinningFields() {
-        Pane[] winningFields = getWinningFields(Token.NOUGHT);
-        if (winningFields == null)
-            winningFields = getWinningFields(Token.CROSS);
-        return winningFields;
+        Pane[] winningNoughts = getWinningFieldsForToken(Token.NOUGHT);
+        return (winningNoughts != null) ? winningNoughts : getWinningFieldsForToken(Token.CROSS);
     }
 
-    private Pane[] getWinningFields(Token token) {
-        NEXT_FIELDS:
-        for (Pane[] fields : winningFieldsList) {
-            for (Pane pane : fields) {
-                if (pane.getUserData() != token)
-                    continue NEXT_FIELDS;
+    private Pane[] getWinningFieldsForToken(Token token) {
+        NEXT_FIELD_LINE:
+        for (Pane[] fieldLine : fieldLines) {
+            for (Pane field : fieldLine) {
+                if (field.getUserData() != token)
+                    continue NEXT_FIELD_LINE;
             }
-            return fields;
+            return fieldLine;
         }
         return null;
     }
@@ -158,10 +157,9 @@ public class Controller {
     }
 
     private void move(Token token, Pane field) {
-        if (endOfGame)
+        if (endOfGame || field.getChildren().size() > 0)
             return;
-        if (field.getChildren().size() == 0)
-            addToken(token, field);
+        addToken(token, field);
         Pane[] winningFields = getWinningFields();
         if (winningFields != null) {
             endOfGame = true;
@@ -179,14 +177,19 @@ public class Controller {
     private void addNought(Pane field) {
         Circle nought = new Circle(centerX, centerY, radius);
         nought.setFill(Color.TRANSPARENT);
-        nought.strokeProperty().set(Color.BLACK);
+        nought.setStroke(Color.BLACK);
+        nought.setStrokeWidth(3);
         field.getChildren().add(nought);
         field.setUserData(Token.NOUGHT);
     }
 
     private void addCross(Pane field) {
-        field.getChildren().add(new Line(line1StartX, line1StartY, line1EndX, line1EndY));
-        field.getChildren().add(new Line(line2StartX, line2StartY, line2EndX, line2EndY));
+        Line line1 = new Line(line1StartX, line1StartY, line1EndX, line1EndY);
+        Line line2 = new Line(line2StartX, line2StartY, line2EndX, line2EndY);
+        line1.setStrokeWidth(3);
+        line2.setStrokeWidth(3);
+        field.getChildren().add(line1);
+        field.getChildren().add(line2);
         field.setUserData(Token.CROSS);
     }
 
