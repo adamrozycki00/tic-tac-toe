@@ -1,11 +1,9 @@
 package pl.adaroz.game;
 
 import javafx.fxml.FXML;
-import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -18,9 +16,7 @@ import java.util.List;
 
 public class Controller {
 
-    private enum Token {
-        NOUGHT, CROSS
-    }
+    private enum Token { NOUGHT, CROSS }
 
     private Token player1Token = Token.NOUGHT;
     private Token player2Token = Token.CROSS;
@@ -29,63 +25,35 @@ public class Controller {
 
     private double centerX = 28.5;
     private double centerY = 29;
-    private double radius = 18.81;
-    private double line1StartX = 9.5;
-    private double line1StartY = 10.0;
-    private double line2StartX = 47.5;
-    private double line2StartY = 10.0;
-    private double line2EndX = 9.5;
-    private double line2EndY = 48.0;
-    private double line1EndX = 47.5;
-    private double line1EndY = 48.0;
+    private double radius = 19;
+    private double lineStartX = 9.5;
+    private double lineStartY = 10.0;
+    private double lineEndX = 47.5;
+    private double lineEndY = 48.0;
 
     private boolean endOfGame;
 
-    @FXML
-    private BorderPane mainPanel;
+    @FXML private BorderPane mainPanel;
+    @FXML private GridPane board;
 
-    @FXML
-    private GridPane board;
+    @FXML private Pane field00;
+    @FXML private Pane field01;
+    @FXML private Pane field02;
+    @FXML private Pane field10;
+    @FXML private Pane field11;
+    @FXML private Pane field12;
+    @FXML private Pane field20;
+    @FXML private Pane field21;
+    @FXML private Pane field22;
 
-    @FXML
-    private Pane field00;
-
-    @FXML
-    private Pane field01;
-
-    @FXML
-    private Pane field02;
-
-    @FXML
-    private Pane field10;
-
-    @FXML
-    private Pane field11;
-
-    @FXML
-    private Pane field12;
-
-    @FXML
-    private Pane field20;
-
-    @FXML
-    private Pane field21;
-
-    @FXML
-    private Pane field22;
-
-    @FXML
-    private RadioButton noughtRadioButton;
-
-    @FXML
-    private RadioButton crossRadioButton;
-
-    @FXML
-    private ToggleGroup tokenToggleGroup;
+    @FXML private RadioButton noughtRadioButton;
+    @FXML private RadioButton crossRadioButton;
+    @FXML private ToggleGroup tokenToggleGroup;
 
     public void initialize() {
         noughtRadioButton.setUserData(Token.NOUGHT);
         crossRadioButton.setUserData(Token.CROSS);
+
         fieldLines.add(new Pane[]{field00, field01, field02});
         fieldLines.add(new Pane[]{field10, field11, field12});
         fieldLines.add(new Pane[]{field20, field21, field22});
@@ -103,7 +71,6 @@ public class Controller {
     }
 
     private void clearBoard() {
-        mainPanel.getChildren().removeIf(node -> node instanceof Line);
         for (Node node : board.getChildren()) {
             if (node instanceof Pane) {
                 Pane field = (Pane) node;
@@ -111,38 +78,21 @@ public class Controller {
                 field.setUserData(null);
             }
         }
+        mainPanel.getChildren().removeIf(node -> node instanceof Line);
     }
 
     private void resizeTokens() {
-        centerX = field00.getWidth() / 2;
-        centerY = field00.getHeight() / 2;
-        radius = Math.min(field00.getWidth(), field00.getHeight()) / 3;
+        double width = field00.getWidth();
+        double height = field00.getHeight();
 
-        line1StartX = Math.max(field00.getWidth() / 6, field00.getWidth() / 2 - radius);
-        line1StartY = Math.max(field00.getHeight() / 6, field00.getHeight() / 2 - radius);
-        line1EndX = Math.min(field00.getWidth() * 5 / 6, field00.getWidth() / 2 + radius);
-        line1EndY = Math.min(field00.getHeight() * 5 / 6, field00.getHeight() / 2 + radius);
-        line2StartX = Math.min(field00.getWidth() * 5 / 6, field00.getWidth() / 2 + radius);
-        line2StartY = Math.max(field00.getHeight() / 6, field00.getHeight() / 2 - radius);
-        line2EndX = Math.max(field00.getWidth() / 6, field00.getWidth() / 2 - radius);
-        line2EndY = Math.min(field00.getHeight() * 5 / 6, field00.getHeight() / 2 + radius);
-    }
+        centerX = width / 2;
+        centerY = height / 2;
+        radius = Math.min(width, height) / 3;
 
-    private Pane[] getWinningFields() {
-        Pane[] winningNoughts = getWinningFieldsForToken(Token.NOUGHT);
-        return (winningNoughts != null) ? winningNoughts : getWinningFieldsForToken(Token.CROSS);
-    }
-
-    private Pane[] getWinningFieldsForToken(Token token) {
-        NEXT_FIELD_LINE:
-        for (Pane[] fieldLine : fieldLines) {
-            for (Pane field : fieldLine) {
-                if (field.getUserData() != token)
-                    continue NEXT_FIELD_LINE;
-            }
-            return fieldLine;
-        }
-        return null;
+        lineStartX = Math.max(width / 6, width / 2 - radius);
+        lineStartY = Math.max(height / 6, height / 2 - radius);
+        lineEndX = Math.min(width * 5 / 6, width / 2 + radius);
+        lineEndY = Math.min(height * 5 / 6, height / 2 + radius);
     }
 
     private void drawEndingLine(Pane[] winningFields) {
@@ -184,8 +134,8 @@ public class Controller {
     }
 
     private void addCross(Pane field) {
-        Line line1 = new Line(line1StartX, line1StartY, line1EndX, line1EndY);
-        Line line2 = new Line(line2StartX, line2StartY, line2EndX, line2EndY);
+        Line line1 = new Line(lineStartX, lineStartY, lineEndX, lineEndY);
+        Line line2 = new Line(lineStartX, lineEndY, lineEndX, lineStartY);
         line1.setStrokeWidth(3);
         line2.setStrokeWidth(3);
         field.getChildren().add(line1);
@@ -193,61 +143,57 @@ public class Controller {
         field.setUserData(Token.CROSS);
     }
 
-    @FXML
-    private void newGameButtonPressed(ActionEvent event) {
-        startNewGame();
+    private Pane[] getWinningFields() {
+        Pane[] winningNoughts = getWinningFieldsForToken(Token.NOUGHT);
+        return (winningNoughts != null) ? winningNoughts : getWinningFieldsForToken(Token.CROSS);
+    }
+
+    private Pane[] getWinningFieldsForToken(Token token) {
+        NEXT_FIELD_LINE:
+        for (Pane[] fieldLine : fieldLines) {
+            for (Pane field : fieldLine) {
+                if (field.getUserData() != token)
+                    continue NEXT_FIELD_LINE;
+            }
+            return fieldLine;
+        }
+        return null;
     }
 
     @FXML
-    private void tokenRadioButtonSelected(ActionEvent event) {
+    private void newGameButtonPressed() { startNewGame(); }
+
+    @FXML
+    private void tokenRadioButtonSelected() {
         player1Token = (Token) tokenToggleGroup.getSelectedToggle().getUserData();
-        player2Token =
-                (player1Token == Token.NOUGHT) ? Token.CROSS : Token.NOUGHT;
+        player2Token = (player1Token == Token.NOUGHT) ? Token.CROSS : Token.NOUGHT;
     }
 
     @FXML
-    private void field00Clicked(MouseEvent event) {
-        move(player1Token, field00);
-    }
+    private void field00Clicked() { move(player1Token, field00); }
 
     @FXML
-    private void field01Clicked(MouseEvent event) {
-        move(player1Token, field01);
-    }
+    private void field01Clicked() { move(player1Token, field01); }
 
     @FXML
-    private void field02Clicked(MouseEvent event) {
-        move(player1Token, field02);
-    }
+    private void field02Clicked() { move(player1Token, field02); }
 
     @FXML
-    private void field10Clicked(MouseEvent event) {
-        move(player1Token, field10);
-    }
+    private void field10Clicked() { move(player1Token, field10); }
 
     @FXML
-    private void field11Clicked(MouseEvent event) {
-        move(player1Token, field11);
-    }
+    private void field11Clicked() { move(player1Token, field11); }
 
     @FXML
-    private void field12Clicked(MouseEvent event) {
-        move(player1Token, field12);
-    }
+    private void field12Clicked() { move(player1Token, field12); }
 
     @FXML
-    private void field20Clicked(MouseEvent event) {
-        move(player1Token, field20);
-    }
+    private void field20Clicked() { move(player1Token, field20); }
 
     @FXML
-    private void field21Clicked(MouseEvent event) {
-        move(player1Token, field21);
-    }
+    private void field21Clicked() { move(player1Token, field21); }
 
     @FXML
-    private void field22Clicked(MouseEvent event) {
-        move(player1Token, field22);
-    }
+    private void field22Clicked() { move(player1Token, field22); }
 
 }
