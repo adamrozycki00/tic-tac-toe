@@ -51,7 +51,7 @@
       </VBox>
    </right>
    <center>
-      <GridPane fx:id="boardPane" gridLinesVisible="true" BorderPane.alignment="CENTER">
+      <GridPane fx:id="board" gridLinesVisible="true" BorderPane.alignment="CENTER">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -69,7 +69,7 @@
             <Insets bottom="9.0" left="9.0" top="9.0" />
          </padding>
          <children>
-            <Pane fx:id="pane00" onMouseClicked="#pane00Clicked" prefHeight="200.0" prefWidth="200.0">
+            <Pane fx:id="field00" onMouseClicked="#field00Clicked" prefHeight="200.0" prefWidth="200.0">
                <padding>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </padding>
@@ -77,7 +77,7 @@
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </GridPane.margin>
             </Pane>
-            <Pane fx:id="pane01" onMouseClicked="#pane01Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+            <Pane fx:id="field01" onMouseClicked="#field01Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                <padding>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </padding>
@@ -85,7 +85,7 @@
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </GridPane.margin>
             </Pane>
-            <Pane fx:id="pane02" onMouseClicked="#pane02Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
+            <Pane fx:id="field02" onMouseClicked="#field02Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
                <padding>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </padding>
@@ -93,7 +93,7 @@
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </GridPane.margin>
             </Pane>
-            <Pane fx:id="pane10" onMouseClicked="#pane10Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+            <Pane fx:id="field10" onMouseClicked="#field10Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                <padding>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </padding>
@@ -101,7 +101,7 @@
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </GridPane.margin>
             </Pane>
-            <Pane fx:id="pane11" onMouseClicked="#pane11Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <Pane fx:id="field11" onMouseClicked="#field11Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <padding>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </padding>
@@ -109,7 +109,7 @@
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </GridPane.margin>
             </Pane>
-            <Pane fx:id="pane12" onMouseClicked="#pane12Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <Pane fx:id="field12" onMouseClicked="#field12Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <padding>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </padding>
@@ -117,7 +117,7 @@
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </GridPane.margin>
             </Pane>
-            <Pane fx:id="pane20" onMouseClicked="#pane20Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
+            <Pane fx:id="field20" onMouseClicked="#field20Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                <padding>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </padding>
@@ -125,7 +125,7 @@
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </GridPane.margin>
             </Pane>
-            <Pane fx:id="pane21" onMouseClicked="#pane21Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <Pane fx:id="field21" onMouseClicked="#field21Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <padding>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </padding>
@@ -133,7 +133,7 @@
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </GridPane.margin>
             </Pane>
-            <Pane fx:id="pane22" onMouseClicked="#pane22Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <Pane fx:id="field22" onMouseClicked="#field22Clicked" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
                <padding>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </padding>
