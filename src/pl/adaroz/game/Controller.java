@@ -19,10 +19,10 @@ import java.util.List;
 public class Controller {
 
     private enum Token {
-        NAUGHT, CROSS
+        NOUGHT, CROSS
     }
 
-    private Token player1Token = Token.NAUGHT;
+    private Token player1Token = Token.NOUGHT;
     private Token player2Token = Token.CROSS;
 
     private final List<Pane[]> winningFieldsList = new ArrayList<>();
@@ -42,7 +42,7 @@ public class Controller {
     private boolean endOfGame;
 
     @FXML
-    private BorderPane gamePane;
+    private BorderPane mainPanel;
 
     @FXML
     private GridPane board;
@@ -84,7 +84,7 @@ public class Controller {
     private ToggleGroup tokenToggleGroup;
 
     public void initialize() {
-        noughtRadioButton.setUserData(Token.NAUGHT);
+        noughtRadioButton.setUserData(Token.NOUGHT);
         crossRadioButton.setUserData(Token.CROSS);
         winningFieldsList.add(new Pane[]{field00, field01, field02});
         winningFieldsList.add(new Pane[]{field10, field11, field12});
@@ -103,12 +103,12 @@ public class Controller {
     }
 
     private void clearBoard() {
-        gamePane.getChildren().removeIf(node -> node instanceof Line);
+        mainPanel.getChildren().removeIf(node -> node instanceof Line);
         for (Node node : board.getChildren())
             if (node instanceof Pane) {
-                Pane pane = (Pane) node;
-                pane.getChildren().clear();
-                pane.setUserData(null);
+                Pane field = (Pane) node;
+                field.getChildren().clear();
+                field.setUserData(null);
             }
     }
 
@@ -128,10 +128,10 @@ public class Controller {
     }
 
     private Pane[] getWinningFields() {
-        Pane[] winningLine = getWinningFields(Token.NAUGHT);
-        if (winningLine == null)
-            winningLine = getWinningFields(Token.CROSS);
-        return winningLine;
+        Pane[] winningFields = getWinningFields(Token.NOUGHT);
+        if (winningFields == null)
+            winningFields = getWinningFields(Token.CROSS);
+        return winningFields;
     }
 
     private Pane[] getWinningFields(Token token) {
@@ -154,7 +154,7 @@ public class Controller {
         line.setEndY(winningFields[2].getLayoutY() + centerY);
         line.setStrokeWidth(5);
         line.setStroke(Color.RED);
-        gamePane.getChildren().add(line);
+        mainPanel.getChildren().add(line);
     }
 
     private void move(Token token, Pane field) {
@@ -170,7 +170,7 @@ public class Controller {
     }
 
     private void addToken(Token token, Pane field) {
-        if (token == Token.NAUGHT)
+        if (token == Token.NOUGHT)
             addNought(field);
         else
             addCross(field);
@@ -181,7 +181,7 @@ public class Controller {
         nought.setFill(Color.TRANSPARENT);
         nought.strokeProperty().set(Color.BLACK);
         field.getChildren().add(nought);
-        field.setUserData(Token.NAUGHT);
+        field.setUserData(Token.NOUGHT);
     }
 
     private void addCross(Pane field) {
@@ -199,7 +199,7 @@ public class Controller {
     private void tokenRadioButtonSelected(ActionEvent event) {
         player1Token = (Token) tokenToggleGroup.getSelectedToggle().getUserData();
         player2Token =
-                player1Token == Token.NAUGHT ? Token.CROSS : Token.NAUGHT;
+                (player1Token == Token.NOUGHT) ? Token.CROSS : Token.NOUGHT;
     }
 
     @FXML
