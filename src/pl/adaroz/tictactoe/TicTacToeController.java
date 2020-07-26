@@ -185,7 +185,7 @@ public class TicTacToeController {
         newGameButton.setText(text);
     }
 
-    public boolean doesComputerMoveFirst() {
+    private boolean doesComputerMoveFirst() {
         return !areTwoPlayers
                 && computerMark == openingMark
                 && emptyFields.size() == numberOfFieldsOnTheBoard;
