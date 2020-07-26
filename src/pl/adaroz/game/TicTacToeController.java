@@ -6,6 +6,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -31,6 +32,8 @@ public class TicTacToeController {
     private double lineStartY = 10.0;
     private double lineEndX = 47.5;
     private double lineEndY = 48.0;
+
+    private Boolean areTwoPlayers = false;
 
     private boolean endOfGame;
 
@@ -61,6 +64,15 @@ public class TicTacToeController {
     private Pane field22;
 
     @FXML
+    private TitledPane markTitledPane;
+
+    @FXML
+    private RadioButton onePlayerRadioButton;
+    @FXML
+    private RadioButton twoPlayersRadioButton;
+    @FXML
+    private ToggleGroup playersToggleGroup;
+    @FXML
     private RadioButton noughtRadioButton;
     @FXML
     private RadioButton crossRadioButton;
@@ -78,6 +90,8 @@ public class TicTacToeController {
     private void setRadioButtons() {
         noughtRadioButton.setUserData(Mark.NOUGHT);
         crossRadioButton.setUserData(Mark.CROSS);
+        onePlayerRadioButton.setUserData(false);
+        twoPlayersRadioButton.setUserData(true);
     }
 
     private void setFieldLines() {
@@ -100,17 +114,22 @@ public class TicTacToeController {
     }
 
     private boolean doesComputerMoveFirst() {
-        return computerMark == Mark.CROSS && emptyFields.size() == 9;
+        return !areTwoPlayers
+                && computerMark == Mark.CROSS
+                && emptyFields.size() == 9;
     }
 
     private void startNewGame() {
         clearBoard();
         resetEmptyFields();
         resizeMarks();
-        disableMarkChoice(false);
+        disableNumberOfPlayersChoice(false);
+        disableComputerMarkChoice(false);
         endOfGame = false;
         if (doesComputerMoveFirst())
             newGameButton.setText("Click again!");
+        if (areTwoPlayers)
+            playerMark = Mark.CROSS;
     }
 
     private void clearBoard() {
@@ -138,11 +157,20 @@ public class TicTacToeController {
         lineEndY = Math.min(height * 5 / 6, height / 2 + radius);
     }
 
-    private void disableMarkChoice(boolean disable) {
+    private void disableComputerMarkChoice(boolean disable) {
         for (Toggle toggle : markToggleGroup.getToggles()) {
             ((RadioButton) toggle).setDisable(false);
-            if (disable) //only disable the computer mark
+            if (disable)
                 ((RadioButton) toggle).setDisable(toggle.getUserData() == computerMark);
+        }
+    }
+
+    private void disableNumberOfPlayersChoice(boolean disable) {
+        for (Toggle toggle : playersToggleGroup.getToggles()) {
+            RadioButton button = (RadioButton) toggle;
+            button.setDisable(false);
+            if (!button.isSelected())
+                button.setDisable(disable);
         }
     }
 
@@ -151,10 +179,21 @@ public class TicTacToeController {
             return false;
         putMark(mark, field);
         emptyFields.remove(field);
-        disableMarkChoice(true);
+        disableNumberOfPlayersChoice(true);
+        if (areTwoPlayers)
+            switchPlayerMark();
+        else
+            disableComputerMarkChoice(true);
         checkForWin();
         checkForEmptyFields();
         return true;
+    }
+
+    private void switchPlayerMark() {
+        if (playerMark == Mark.CROSS)
+            playerMark = Mark.NOUGHT;
+        else
+            playerMark = Mark.CROSS;
     }
 
     private boolean isMovePossible(Pane field) {
@@ -236,12 +275,20 @@ public class TicTacToeController {
     }
 
     @FXML
+    private void playersRadioButtonSelected() {
+        areTwoPlayers = (Boolean) playersToggleGroup.getSelectedToggle().getUserData();
+        markTitledPane.setDisable(areTwoPlayers);
+        playerMark = areTwoPlayers ?
+                Mark.CROSS :
+                (Mark) markToggleGroup.getSelectedToggle().getUserData();
+    }
+
+    @FXML
     private void newGameButtonPressed() {
         if (doesComputerMoveFirst()) {
             move(computerMark, getComputerField());
             newGameButton.setText(newGameText);
-        }
-        else
+        } else
             startNewGame();
     }
 
@@ -251,64 +298,81 @@ public class TicTacToeController {
         if (playerMark == Mark.CROSS) {
             computerMark = Mark.NOUGHT;
             newGameButton.setText(newGameText);
-        }
-        else {
+        } else {
             computerMark = Mark.CROSS;
             move(computerMark, getComputerField());
         }
-        disableMarkChoice(true);
+        disableComputerMarkChoice(true);
     }
 
     @FXML
     private void field00Clicked() {
-        if (!doesComputerMoveFirst() && move(playerMark, field00))
+        if (areTwoPlayers)
+            move(playerMark, field00);
+        else if (!doesComputerMoveFirst() && move(playerMark, field00))
             move(computerMark, getComputerField());
     }
 
     @FXML
     private void field01Clicked() {
+        if (areTwoPlayers)
+            move(playerMark, field01);
         if (!doesComputerMoveFirst() && move(playerMark, field01))
             move(computerMark, getComputerField());
     }
 
     @FXML
     private void field02Clicked() {
+        if (areTwoPlayers)
+            move(playerMark, field02);
         if (!doesComputerMoveFirst() && move(playerMark, field02))
             move(computerMark, getComputerField());
     }
 
     @FXML
     private void field10Clicked() {
+        if (areTwoPlayers)
+            move(playerMark, field10);
         if (!doesComputerMoveFirst() && move(playerMark, field10))
             move(computerMark, getComputerField());
     }
 
     @FXML
     private void field11Clicked() {
+        if (areTwoPlayers)
+            move(playerMark, field11);
         if (!doesComputerMoveFirst() && move(playerMark, field11))
             move(computerMark, getComputerField());
     }
 
     @FXML
     private void field12Clicked() {
+        if (areTwoPlayers)
+            move(playerMark, field12);
         if (!doesComputerMoveFirst() && move(playerMark, field12))
             move(computerMark, getComputerField());
     }
 
     @FXML
     private void field20Clicked() {
+        if (areTwoPlayers)
+            move(playerMark, field20);
         if (!doesComputerMoveFirst() && move(playerMark, field20))
             move(computerMark, getComputerField());
     }
 
     @FXML
     private void field21Clicked() {
+        if (areTwoPlayers)
+            move(playerMark, field21);
         if (!doesComputerMoveFirst() && move(playerMark, field21))
             move(computerMark, getComputerField());
     }
 
     @FXML
     private void field22Clicked() {
+        if (areTwoPlayers)
+            move(playerMark, field22);
         if (!doesComputerMoveFirst() && move(playerMark, field22))
             move(computerMark, getComputerField());
     }
