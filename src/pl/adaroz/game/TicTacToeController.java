@@ -149,7 +149,7 @@ public class TicTacToeController {
     private boolean move(Mark mark, Pane field) {
         if (!isMovePossible(field))
             return false;
-        addMark(mark, field);
+        putMark(mark, field);
         emptyFields.remove(field);
         disableMarkChoice(true);
         checkForWin();
@@ -161,14 +161,14 @@ public class TicTacToeController {
         return emptyFields.contains(field) && !endOfGame;
     }
 
-    private void addMark(Mark mark, Pane field) {
+    private void putMark(Mark mark, Pane field) {
         if (mark == Mark.NOUGHT)
-            addNought(field);
+            putNought(field);
         else
-            addCross(field);
+            putCross(field);
     }
 
-    private void addNought(Pane field) {
+    private void putNought(Pane field) {
         Circle nought = new Circle(centerX, centerY, radius);
         nought.setFill(Color.TRANSPARENT);
         nought.setStroke(Color.BLACK);
@@ -177,7 +177,7 @@ public class TicTacToeController {
         field.setUserData(Mark.NOUGHT);
     }
 
-    private void addCross(Pane field) {
+    private void putCross(Pane field) {
         Line line1 = new Line(lineStartX, lineStartY, lineEndX, lineEndY);
         Line line2 = new Line(lineStartX, lineEndY, lineEndX, lineStartY);
         line1.setStrokeWidth(3);
