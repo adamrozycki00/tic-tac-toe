@@ -1,4 +1,4 @@
-package pl.adaroz.game;
+package pl.adaroz.tictactoe;
 
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -16,13 +16,13 @@ import java.util.Random;
 
 public class TicTacToeController {
 
+    private enum Mark {NOUGHT, CROSS}
+
+    private final Mark openingMark = Mark.CROSS;
     private final List<Pane[]> fieldLines = new ArrayList<>();
     private final List<Pane> emptyFields = new ArrayList<>();
-    private final Mark openingMark = Mark.CROSS;
-    private final int markStrokeWidth = 3;
     private final Color markColor = Color.BLACK;
-
-    private enum Mark {NOUGHT, CROSS}
+    private final int markStrokeWidth = 3;
 
     private Mark playerMark;
     private Mark computerMark;
@@ -36,6 +36,7 @@ public class TicTacToeController {
     private double lineEndY;
 
     private int numberOfFieldsOnTheBoard;
+
     private boolean areTwoPlayers;
     private boolean endOfGame;
 
@@ -66,17 +67,17 @@ public class TicTacToeController {
     private Pane field22;
 
     @FXML
+    private ToggleGroup playersToggleGroup;
+    @FXML
     private RadioButton onePlayerRadioButton;
     @FXML
     private RadioButton twoPlayersRadioButton;
     @FXML
-    private ToggleGroup playersToggleGroup;
+    private ToggleGroup markToggleGroup;
     @FXML
     private RadioButton noughtRadioButton;
     @FXML
     private RadioButton crossRadioButton;
-    @FXML
-    private ToggleGroup markToggleGroup;
     @FXML
     private Button newGameButton;
 
@@ -136,7 +137,7 @@ public class TicTacToeController {
         clearBoard();
         resetEmptyFields();
         disableOptions(false);
-        setForComputerMovingFirst();
+        handleNewGameButton();
         setForTwoPlayers();
         endOfGame = false;
     }
@@ -177,20 +178,22 @@ public class TicTacToeController {
         }
     }
 
-    private void setForTwoPlayers() {
-        if (areTwoPlayers)
-            playerMark = openingMark;
+    private void handleNewGameButton() {
+        String text = doesComputerMoveFirst() ?
+                "Click again!"
+                : "New game";
+        newGameButton.setText(text);
     }
 
-    private void setForComputerMovingFirst() {
-        if (doesComputerMoveFirst())
-            newGameButton.setText("Click again!");
-    }
-
-    private boolean doesComputerMoveFirst() {
+    public boolean doesComputerMoveFirst() {
         return !areTwoPlayers
                 && computerMark == openingMark
                 && emptyFields.size() == numberOfFieldsOnTheBoard;
+    }
+
+    private void setForTwoPlayers() {
+        if (areTwoPlayers)
+            playerMark = openingMark;
     }
 
     private boolean move(Mark mark, Pane field) {
@@ -200,7 +203,7 @@ public class TicTacToeController {
         putMark(mark, field);
         emptyFields.remove(field);
         switchPlayerIfTwo();
-        resetNewGameButtonText();
+        handleNewGameButton();
         disableOptions(true);
         endGameIfWon();
         endGameIfNoEmptyFieldLeft();
@@ -258,10 +261,6 @@ public class TicTacToeController {
             playerMark = getDifferentMarkThan(playerMark);
     }
 
-    private void resetNewGameButtonText() {
-        newGameButton.setText("New game");
-    }
-
     private void endGameIfWon() {
         Pane[] winningFields = getWinningFields();
         if (winningFields != null) {
@@ -305,6 +304,13 @@ public class TicTacToeController {
             endOfGame = true;
     }
 
+    private void fieldClicked(Pane field) {
+        if (areTwoPlayers)
+            move(playerMark, field);
+        if (!doesComputerMoveFirst() && move(playerMark, field))
+            move(computerMark, getFieldChosenByComputer());
+    }
+
     private Pane getFieldChosenByComputer() {
         return getRandomField();
     }
@@ -316,13 +322,6 @@ public class TicTacToeController {
         return emptyFields.get(randomIndex);
     }
 
-    private void fieldClicked(Pane field) {
-        if (areTwoPlayers)
-            move(playerMark, field);
-        if (!doesComputerMoveFirst() && move(playerMark, field))
-            move(computerMark, getFieldChosenByComputer());
-    }
-
     @FXML
     private void playersRadioButtonSelected() {
         areTwoPlayers = ((int) playersToggleGroup.getSelectedToggle().getUserData() == 2);
@@ -330,7 +329,7 @@ public class TicTacToeController {
         playerMark = areTwoPlayers ?
                 openingMark
                 : (Mark) markToggleGroup.getSelectedToggle().getUserData();
-        resetNewGameButtonText();
+        handleNewGameButton();
     }
 
     @FXML
@@ -346,7 +345,7 @@ public class TicTacToeController {
         playerMark = (Mark) markToggleGroup.getSelectedToggle().getUserData();
         if (playerMark == Mark.CROSS) {
             computerMark = Mark.NOUGHT;
-            resetNewGameButtonText();
+            handleNewGameButton();
         } else {
             computerMark = Mark.CROSS;
             move(computerMark, getFieldChosenByComputer());
@@ -355,30 +354,48 @@ public class TicTacToeController {
     }
 
     @FXML
-    private void field00Clicked() { fieldClicked(field00); }
+    private void field00Clicked() {
+        fieldClicked(field00);
+    }
 
     @FXML
-    private void field01Clicked() { fieldClicked(field01); }
+    private void field01Clicked() {
+        fieldClicked(field01);
+    }
 
     @FXML
-    private void field02Clicked() { fieldClicked(field02); }
+    private void field02Clicked() {
+        fieldClicked(field02);
+    }
 
     @FXML
-    private void field10Clicked() { fieldClicked(field10); }
+    private void field10Clicked() {
+        fieldClicked(field10);
+    }
 
     @FXML
-    private void field11Clicked() { fieldClicked(field11); }
+    private void field11Clicked() {
+        fieldClicked(field11);
+    }
 
     @FXML
-    private void field12Clicked() { fieldClicked(field12); }
+    private void field12Clicked() {
+        fieldClicked(field12);
+    }
 
     @FXML
-    private void field20Clicked() { fieldClicked(field20); }
+    private void field20Clicked() {
+        fieldClicked(field20);
+    }
 
     @FXML
-    private void field21Clicked() { fieldClicked(field21); }
+    private void field21Clicked() {
+        fieldClicked(field21);
+    }
 
     @FXML
-    private void field22Clicked() { fieldClicked(field22); }
+    private void field22Clicked() {
+        fieldClicked(field22);
+    }
 
 }

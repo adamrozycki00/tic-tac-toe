@@ -1,4 +1,4 @@
-package pl.adaroz.game;
+package pl.adaroz.tictactoe;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
