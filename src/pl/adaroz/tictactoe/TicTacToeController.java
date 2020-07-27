@@ -298,8 +298,8 @@ public class TicTacToeController {
         line.setStartY(winningFields[0].getLayoutY() + centerY);
         line.setEndX(winningFields[winningFields.length - 1].getLayoutX() + centerX);
         line.setEndY(winningFields[winningFields.length - 1].getLayoutY() + centerY);
-        line.setStrokeWidth(5);
         line.setStroke(Color.RED);
+        line.setStrokeWidth(5);
         mainPanel.getChildren().add(line);
     }
 
