@@ -18,7 +18,7 @@ public class TicTacToeController {
 
     private enum Mark {NOUGHT, CROSS}
 
-    private final Mark openingMark = Mark.CROSS;
+    private final Mark openingMark = Mark.NOUGHT;
     private final List<Pane[]> fieldLines = new ArrayList<>();
     private final List<Pane> emptyFields = new ArrayList<>();
     private final Color markColor = Color.BLACK;
@@ -94,6 +94,10 @@ public class TicTacToeController {
         twoPlayersRadioButton.setUserData(2);
         noughtRadioButton.setUserData(Mark.NOUGHT);
         crossRadioButton.setUserData(Mark.CROSS);
+        for (Toggle toggle : markToggleGroup.getToggles()) {
+            if (toggle.getUserData() == openingMark)
+                markToggleGroup.selectToggle(toggle);
+        }
     }
 
     private void setFieldLines() {
@@ -343,11 +347,11 @@ public class TicTacToeController {
     @FXML
     private void markRadioButtonSelected() {
         playerMark = (Mark) markToggleGroup.getSelectedToggle().getUserData();
-        if (playerMark == Mark.CROSS) {
-            computerMark = Mark.NOUGHT;
+        if (playerMark == openingMark) {
+            computerMark = getDifferentMarkThan(openingMark);
             handleNewGameButton();
         } else {
-            computerMark = Mark.CROSS;
+            computerMark = openingMark;
             move(computerMark, getFieldChosenByComputer());
         }
         disableComputerMarkChoice(true);
