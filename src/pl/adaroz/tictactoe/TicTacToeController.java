@@ -274,10 +274,10 @@ public class TicTacToeController {
     }
 
     private Pane[] getWinningFields() {
-        Pane[] winningNoughts = getWinningFieldsFor(Mark.NOUGHT);
-        return (winningNoughts != null) ?
-                winningNoughts
-                : getWinningFieldsFor(Mark.CROSS);
+        Pane[] winningFields = getWinningFieldsFor(openingMark);
+        if (winningFields == null)
+            winningFields = getWinningFieldsFor(getDifferentMarkThan(openingMark));
+        return winningFields;
     }
 
     private Pane[] getWinningFieldsFor(Mark mark) {
