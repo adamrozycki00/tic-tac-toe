@@ -18,7 +18,7 @@ public class TicTacToeController {
 
     private enum Mark {NOUGHT, CROSS}
 
-    private final Mark openingMark = Mark.NOUGHT;
+    private final Mark openingMark = Mark.CROSS;
     private final List<Pane[]> fieldLines = new ArrayList<>();
     private final List<Pane> emptyFields = new ArrayList<>();
     private final Color markColor = Color.BLACK;
