@@ -1,4 +1,4 @@
-package pl.adaroz.tictactoe;
+package pl.adaroz.tictactoe.mark;
 
 public enum Mark {
     NOUGHT, CROSS

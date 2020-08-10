@@ -1,4 +1,4 @@
-package pl.adaroz.tictactoe;
+package pl.adaroz.tictactoe.strategy;
 
 import javafx.scene.layout.Pane;
 

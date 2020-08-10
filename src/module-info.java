@@ -1,5 +1,5 @@
 module tic.tac.toe {
     requires javafx.controls;
     requires javafx.fxml;
-    opens pl.adaroz.tictactoe;
+    opens pl.adaroz.tictactoe.game;
 }

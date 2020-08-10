@@ -1,4 +1,4 @@
-package pl.adaroz.tictactoe;
+package pl.adaroz.tictactoe.game;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

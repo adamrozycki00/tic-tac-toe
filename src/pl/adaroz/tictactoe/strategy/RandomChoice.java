@@ -1,12 +1,13 @@
-package pl.adaroz.tictactoe;
+package pl.adaroz.tictactoe.strategy;
 
 import javafx.scene.layout.Pane;
+import pl.adaroz.tictactoe.game.SetUpController;
 
 import java.util.Random;
 
 public class RandomChoice implements ComputerChoice {
 
-    private SetUpController setUpController;
+    private final SetUpController setUpController;
 
     public RandomChoice(SetUpController setUpController) {
         this.setUpController = setUpController;

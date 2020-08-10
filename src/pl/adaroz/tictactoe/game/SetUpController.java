@@ -1,4 +1,4 @@
-package pl.adaroz.tictactoe;
+package pl.adaroz.tictactoe.game;
 
 import javafx.scene.Node;
 import javafx.scene.control.RadioButton;
@@ -6,6 +6,8 @@ import javafx.scene.control.Toggle;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import pl.adaroz.tictactoe.mark.Mark;
+
 import java.util.ArrayList;
 import java.util.List;
 
