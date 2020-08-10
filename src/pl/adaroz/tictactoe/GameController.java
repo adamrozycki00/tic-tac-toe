@@ -4,7 +4,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-
 import java.util.Random;
 
 public class GameController {
@@ -143,14 +142,8 @@ public class GameController {
     }
 
     private Pane getFieldChosenByComputer() {
-        return getRandomField();
-    }
-
-    private Pane getRandomField() {
-        if (setUpController.getEmptyFields().isEmpty())
-            return null;
-        int randomIndex = new Random().nextInt(setUpController.getEmptyFields().size());
-        return setUpController.getEmptyFields().get(randomIndex);
+        ComputerChoice computerChoice = new RandomChoice(setUpController);
+        return computerChoice.getField();
     }
 
 }
