@@ -1,10 +1,8 @@
 package pl.adaroz.tictactoe;
 
-import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Toggle;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -14,10 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class TicTacToeController {
+public class GameController {
 
     private enum Mark {NOUGHT, CROSS}
 
+    public GameController(BoardController boardController) {
+        this.boardController = boardController;
+    }
+
+    private final BoardController boardController;
     private final Mark openingMark = Mark.CROSS;
     private final List<Pane[]> fieldLines = new ArrayList<>();
     private final List<Pane> emptyFields = new ArrayList<>();
@@ -35,95 +38,79 @@ public class TicTacToeController {
     private double lineEndX;
     private double lineEndY;
 
-    private int numberOfFieldsOnTheBoard;
-
     private boolean areTwoPlayers;
     private boolean endOfGame;
-
-    @FXML
-    private BorderPane mainPanel;
-    @FXML
-    private GridPane board;
-    @FXML
-    private TitledPane markTitledPane;
-
-    @FXML
-    private Pane field00;
-    @FXML
-    private Pane field01;
-    @FXML
-    private Pane field02;
-    @FXML
-    private Pane field10;
-    @FXML
-    private Pane field11;
-    @FXML
-    private Pane field12;
-    @FXML
-    private Pane field20;
-    @FXML
-    private Pane field21;
-    @FXML
-    private Pane field22;
-
-    @FXML
-    private ToggleGroup playersToggleGroup;
-    @FXML
-    private RadioButton onePlayerRadioButton;
-    @FXML
-    private RadioButton twoPlayersRadioButton;
-    @FXML
-    private ToggleGroup markToggleGroup;
-    @FXML
-    private RadioButton noughtRadioButton;
-    @FXML
-    private RadioButton crossRadioButton;
-    @FXML
-    private Button newGameButton;
 
     public void initialize() {
         setRadioButtons();
         setFieldLines();
         resetEmptyFields();
-        calculateNumberOfFieldsOnTheBoard();
         assignMarksToPlayers();
     }
 
+    public void fieldClicked(Pane field) {
+        if (areTwoPlayers)
+            move(playerMark, field);
+        if (!doesComputerMoveFirst() && move(playerMark, field))
+            move(computerMark, getFieldChosenByComputer());
+    }
+
+    public void playersRadioButtonSelected() {
+        areTwoPlayers = ((int) boardController.playersToggleGroup.getSelectedToggle().getUserData() == 2);
+        boardController.markTitledPane.setDisable(areTwoPlayers);
+        playerMark = areTwoPlayers ?
+                openingMark
+                : (Mark) boardController.markToggleGroup.getSelectedToggle().getUserData();
+        handleNewGameButton();
+    }
+
+    public void newGameButtonPressed() {
+        if (doesComputerMoveFirst())
+            move(computerMark, getFieldChosenByComputer());
+        else
+            startNewGame();
+    }
+
+    public void markRadioButtonSelected() {
+        playerMark = (Mark) boardController.markToggleGroup.getSelectedToggle().getUserData();
+        if (playerMark == openingMark) {
+            computerMark = getDifferentMarkThan(openingMark);
+            handleNewGameButton();
+        } else {
+            computerMark = openingMark;
+            move(computerMark, getFieldChosenByComputer());
+        }
+        disableComputerMarkChoice(true);
+    }
+
     private void setRadioButtons() {
-        onePlayerRadioButton.setUserData(1);
-        twoPlayersRadioButton.setUserData(2);
-        noughtRadioButton.setUserData(Mark.NOUGHT);
-        crossRadioButton.setUserData(Mark.CROSS);
-        for (Toggle toggle : markToggleGroup.getToggles()) {
+        boardController.onePlayerRadioButton.setUserData(1);
+        boardController.twoPlayersRadioButton.setUserData(2);
+        boardController.noughtRadioButton.setUserData(Mark.NOUGHT);
+        boardController.crossRadioButton.setUserData(Mark.CROSS);
+        for (Toggle toggle : boardController.markToggleGroup.getToggles()) {
             if (toggle.getUserData() == openingMark)
-                markToggleGroup.selectToggle(toggle);
+                boardController.markToggleGroup.selectToggle(toggle);
         }
     }
 
     private void setFieldLines() {
-        fieldLines.add(new Pane[]{field00, field01, field02});
-        fieldLines.add(new Pane[]{field10, field11, field12});
-        fieldLines.add(new Pane[]{field20, field21, field22});
-        fieldLines.add(new Pane[]{field00, field10, field20});
-        fieldLines.add(new Pane[]{field01, field11, field21});
-        fieldLines.add(new Pane[]{field02, field12, field22});
-        fieldLines.add(new Pane[]{field00, field11, field22});
-        fieldLines.add(new Pane[]{field20, field11, field02});
+        fieldLines.add(new Pane[]{boardController.field00, boardController.field01, boardController.field02});
+        fieldLines.add(new Pane[]{boardController.field10, boardController.field11, boardController.field12});
+        fieldLines.add(new Pane[]{boardController.field20, boardController.field21, boardController.field22});
+        fieldLines.add(new Pane[]{boardController.field00, boardController.field10, boardController.field20});
+        fieldLines.add(new Pane[]{boardController.field01, boardController.field11, boardController.field21});
+        fieldLines.add(new Pane[]{boardController.field02, boardController.field12, boardController.field22});
+        fieldLines.add(new Pane[]{boardController.field00, boardController.field11, boardController.field22});
+        fieldLines.add(new Pane[]{boardController.field20, boardController.field11, boardController.field02});
     }
 
     private void resetEmptyFields() {
         emptyFields.clear();
-        for (Node node : board.getChildren()) {
+        for (Node node : boardController.board.getChildren()) {
             if (node instanceof Pane)
                 emptyFields.add((Pane) node);
         }
-    }
-
-    private void calculateNumberOfFieldsOnTheBoard() {
-        int count = 0;
-        for (Node node : board.getChildren())
-            if (node instanceof Pane) ++count;
-        numberOfFieldsOnTheBoard = count;
     }
 
     private void assignMarksToPlayers() {
@@ -147,14 +134,14 @@ public class TicTacToeController {
     }
 
     private void clearBoard() {
-        for (Node node : board.getChildren()) {
+        for (Node node : boardController.board.getChildren()) {
             if (node instanceof Pane) {
                 Pane field = (Pane) node;
                 field.getChildren().clear();
                 field.setUserData(null);
             }
         }
-        mainPanel.getChildren().removeIf(node -> node instanceof Line);
+        boardController.mainPanel.getChildren().removeIf(node -> node instanceof Line);
     }
 
     private void disableOptions(boolean disable) {
@@ -163,7 +150,7 @@ public class TicTacToeController {
     }
 
     private void disableUnselectedPlayersChoice(boolean disable) {
-        for (Toggle toggle : playersToggleGroup.getToggles()) {
+        for (Toggle toggle : boardController.playersToggleGroup.getToggles()) {
             RadioButton button = (RadioButton) toggle;
             if (!button.isSelected())
                 button.setDisable(disable);
@@ -173,7 +160,7 @@ public class TicTacToeController {
     }
 
     private void disableComputerMarkChoice(boolean disable) {
-        for (Toggle toggle : markToggleGroup.getToggles()) {
+        for (Toggle toggle : boardController.markToggleGroup.getToggles()) {
             RadioButton button = (RadioButton) toggle;
             if (toggle.getUserData() == computerMark)
                 button.setDisable(disable);
@@ -186,13 +173,13 @@ public class TicTacToeController {
         String text = doesComputerMoveFirst() ?
                 "Click again!"
                 : "New game";
-        newGameButton.setText(text);
+        boardController.newGameButton.setText(text);
     }
 
     private boolean doesComputerMoveFirst() {
         return !areTwoPlayers
                 && computerMark == openingMark
-                && emptyFields.size() == numberOfFieldsOnTheBoard;
+                && emptyFields.size() == 9;
     }
 
     private void setForTwoPlayers() {
@@ -219,8 +206,8 @@ public class TicTacToeController {
     }
 
     private void resizeMarks() {
-        double width = field00.getWidth();
-        double height = field00.getHeight();
+        double width = boardController.field00.getWidth();
+        double height = boardController.field00.getHeight();
 
         centerX = width / 2;
         centerY = height / 2;
@@ -300,19 +287,12 @@ public class TicTacToeController {
         line.setEndY(winningFields[winningFields.length - 1].getLayoutY() + centerY);
         line.setStroke(Color.RED);
         line.setStrokeWidth(5);
-        mainPanel.getChildren().add(line);
+        boardController.mainPanel.getChildren().add(line);
     }
 
     private void endGameIfNoEmptyFieldLeft() {
         if (emptyFields.isEmpty())
             endOfGame = true;
-    }
-
-    private void fieldClicked(Pane field) {
-        if (areTwoPlayers)
-            move(playerMark, field);
-        if (!doesComputerMoveFirst() && move(playerMark, field))
-            move(computerMark, getFieldChosenByComputer());
     }
 
     private Pane getFieldChosenByComputer() {
@@ -324,82 +304,6 @@ public class TicTacToeController {
             return null;
         int randomIndex = new Random().nextInt(emptyFields.size());
         return emptyFields.get(randomIndex);
-    }
-
-    @FXML
-    private void playersRadioButtonSelected() {
-        areTwoPlayers = ((int) playersToggleGroup.getSelectedToggle().getUserData() == 2);
-        markTitledPane.setDisable(areTwoPlayers);
-        playerMark = areTwoPlayers ?
-                openingMark
-                : (Mark) markToggleGroup.getSelectedToggle().getUserData();
-        handleNewGameButton();
-    }
-
-    @FXML
-    private void newGameButtonPressed() {
-        if (doesComputerMoveFirst())
-            move(computerMark, getFieldChosenByComputer());
-        else
-            startNewGame();
-    }
-
-    @FXML
-    private void markRadioButtonSelected() {
-        playerMark = (Mark) markToggleGroup.getSelectedToggle().getUserData();
-        if (playerMark == openingMark) {
-            computerMark = getDifferentMarkThan(openingMark);
-            handleNewGameButton();
-        } else {
-            computerMark = openingMark;
-            move(computerMark, getFieldChosenByComputer());
-        }
-        disableComputerMarkChoice(true);
-    }
-
-    @FXML
-    private void field00Clicked() {
-        fieldClicked(field00);
-    }
-
-    @FXML
-    private void field01Clicked() {
-        fieldClicked(field01);
-    }
-
-    @FXML
-    private void field02Clicked() {
-        fieldClicked(field02);
-    }
-
-    @FXML
-    private void field10Clicked() {
-        fieldClicked(field10);
-    }
-
-    @FXML
-    private void field11Clicked() {
-        fieldClicked(field11);
-    }
-
-    @FXML
-    private void field12Clicked() {
-        fieldClicked(field12);
-    }
-
-    @FXML
-    private void field20Clicked() {
-        fieldClicked(field20);
-    }
-
-    @FXML
-    private void field21Clicked() {
-        fieldClicked(field21);
-    }
-
-    @FXML
-    private void field22Clicked() {
-        fieldClicked(field22);
     }
 
 }
