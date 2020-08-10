@@ -11,7 +11,12 @@ import javafx.scene.layout.Pane;
 
 public class BoardController {
 
+    private final SetUpController setUpController = new SetUpController(this);
     private final GameController gameController = new GameController(this);
+
+    public SetUpController getSetUpController() {
+        return setUpController;
+    }
 
     @FXML
     public BorderPane mainPanel;
@@ -55,7 +60,7 @@ public class BoardController {
     public Button newGameButton;
 
     public void initialize() {
-        gameController.initialize();
+        setUpController.initialize();
     }
 
     @FXML
